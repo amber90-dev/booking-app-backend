@@ -1,0 +1,1 @@
+{"version":3,"file":"ormconfig.js","sourceRoot":"","sources":["../ormconfig.ts"],"names":[],"mappings":";;;AACA,yBAAuB;AACvB,qCAAqC;AACrC,yDAA+C;AAElC,QAAA,aAAa,GAAG,IAAI,oBAAU,CAAC;IAC1C,IAAI,EAAE,UAAU;IAChB,GAAG,EAAE,OAAO,CAAC,GAAG,CAAC,YAAY;IAC7B,QAAQ,EAAE,CAAC,kBAAI,CAAC;IAChB,WAAW,EAAE,IAAI;IACjB,OAAO,EAAE,KAAK;CACf,CAAC,CAAC;AAEH,kBAAe,qBAAa,CAAC"}
