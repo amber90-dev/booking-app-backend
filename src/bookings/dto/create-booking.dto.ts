@@ -65,8 +65,12 @@ export class CreateBookingDto {
   @IsOptional() @IsNumberString() clientWaitingTime?: string;
   @IsOptional() @IsNumberString() clientWaitingTimePrice?: string;
   @IsOptional() @IsNumberString() clientLhrGtwCharge?: string;
-  @IsOptional() @IsInt() clientTelUsedMins?: number;
-  @IsOptional() @IsNumberString() clientTelCharge?: string;
+
+  // @IsOptional() @IsInt() clientTelUsedMins?: number;
+  // @IsOptional() @IsNumberString() clientTelCharge?: string;
+  @IsOptional() @IsNumberString() clientViaPrice?: string;
+  @IsOptional() @IsNumberString() clientGratuity?: string;
+
   @IsOptional() @IsNumberString() clientCarPark?: string;
   @IsOptional() @IsNumberString() totalClient?: string;
 
@@ -77,8 +81,12 @@ export class CreateBookingDto {
   @IsOptional() @IsNumberString() driverWaitingTime?: string;
   @IsOptional() @IsNumberString() driverWaitingTimePrice?: string;
   @IsOptional() @IsNumberString() driverLhrGtwCharge?: string;
-  @IsOptional() @IsInt() driverTelUsedMins?: number;
-  @IsOptional() @IsNumberString() driverTelCharge?: string;
-  @IsOptional() @IsNumberString() driverCarPark?: string;
+
+  // @IsOptional() @IsInt() driverTelUsedMins?: number;
+  // @IsOptional() @IsNumberString() driverTelCharge?: string;
+  @IsOptional() @IsNumberString() driverViaPrice?: string;
+  @IsOptional() @IsNumberString() driverGratuity?: string;
+
+  @IsOptional() @IsNumberString() driverCarPark?: string; // Check type? Original was string in entity but maybe user wants clean up? sticking to string for consistnecy
   @IsOptional() @IsNumberString() totalDriver?: string;
 }

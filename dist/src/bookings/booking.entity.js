@@ -12,6 +12,35 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Booking = void 0;
 const typeorm_1 = require("typeorm");
 let Booking = class Booking {
+    calculateTotals() {
+        // Helper to parse string to float, default to 0
+        const parse = (val) => {
+            if (!val)
+                return 0;
+            const num = parseFloat(val.toString());
+            return isNaN(num) ? 0 : num;
+        };
+        // Client Total
+        const cTotal = parse(this.clientScheduledFare) +
+            parse(this.clientCharge) +
+            parse(this.clientMeetGreet) +
+            parse(this.clientWaitingTimePrice) + // Waiting time price, not mins
+            parse(this.clientLhrGtwCharge) +
+            parse(this.clientViaPrice) +
+            parse(this.clientGratuity) +
+            parse(this.clientCarPark);
+        this.totalClient = cTotal.toFixed(2);
+        // Driver Total
+        const dTotal = parse(this.driverScheduledFare) +
+            parse(this.driverCharge) +
+            parse(this.driverMeetGreet) +
+            parse(this.driverWaitingTimePrice) +
+            parse(this.driverLhrGtwCharge) +
+            parse(this.driverViaPrice) +
+            parse(this.driverGratuity) +
+            parse(this.driverCarPark);
+        this.totalDriver = dTotal.toFixed(2);
+    }
 };
 exports.Booking = Booking;
 __decorate([
@@ -195,13 +224,13 @@ __decorate([
     __metadata("design:type", String)
 ], Booking.prototype, "clientLhrGtwCharge", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: "integer", default: 0 }),
-    __metadata("design:type", Number)
-], Booking.prototype, "clientTelUsedMins", void 0);
+    (0, typeorm_1.Column)({ type: "numeric", precision: 12, scale: 2, default: 0 }),
+    __metadata("design:type", String)
+], Booking.prototype, "clientViaPrice", void 0);
 __decorate([
     (0, typeorm_1.Column)({ type: "numeric", precision: 12, scale: 2, default: 0 }),
     __metadata("design:type", String)
-], Booking.prototype, "clientTelCharge", void 0);
+], Booking.prototype, "clientGratuity", void 0);
 __decorate([
     (0, typeorm_1.Column)({ type: "numeric", precision: 12, scale: 2, default: 0 }),
     __metadata("design:type", String)
@@ -235,13 +264,13 @@ __decorate([
     __metadata("design:type", String)
 ], Booking.prototype, "driverLhrGtwCharge", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: "integer", default: 0 }),
-    __metadata("design:type", Number)
-], Booking.prototype, "driverTelUsedMins", void 0);
+    (0, typeorm_1.Column)({ type: "numeric", precision: 12, scale: 2, default: 0 }),
+    __metadata("design:type", String)
+], Booking.prototype, "driverViaPrice", void 0);
 __decorate([
     (0, typeorm_1.Column)({ type: "numeric", precision: 12, scale: 2, default: 0 }),
     __metadata("design:type", String)
-], Booking.prototype, "driverTelCharge", void 0);
+], Booking.prototype, "driverGratuity", void 0);
 __decorate([
     (0, typeorm_1.Column)({ type: "numeric", precision: 12, scale: 2, default: 0 }),
     __metadata("design:type", String)
@@ -258,6 +287,13 @@ __decorate([
     (0, typeorm_1.UpdateDateColumn)(),
     __metadata("design:type", Date)
 ], Booking.prototype, "updatedAt", void 0);
+__decorate([
+    (0, typeorm_1.BeforeInsert)(),
+    (0, typeorm_1.BeforeUpdate)(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], Booking.prototype, "calculateTotals", null);
 exports.Booking = Booking = __decorate([
     (0, typeorm_1.Entity)("bookings")
 ], Booking);

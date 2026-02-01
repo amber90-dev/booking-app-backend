@@ -236,14 +236,14 @@ __decorate([
 ], CreateBookingDto.prototype, "clientLhrGtwCharge", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsInt)(),
-    __metadata("design:type", Number)
-], CreateBookingDto.prototype, "clientTelUsedMins", void 0);
+    (0, class_validator_1.IsNumberString)(),
+    __metadata("design:type", String)
+], CreateBookingDto.prototype, "clientViaPrice", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsNumberString)(),
     __metadata("design:type", String)
-], CreateBookingDto.prototype, "clientTelCharge", void 0);
+], CreateBookingDto.prototype, "clientGratuity", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsNumberString)(),
@@ -286,14 +286,14 @@ __decorate([
 ], CreateBookingDto.prototype, "driverLhrGtwCharge", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsInt)(),
-    __metadata("design:type", Number)
-], CreateBookingDto.prototype, "driverTelUsedMins", void 0);
+    (0, class_validator_1.IsNumberString)(),
+    __metadata("design:type", String)
+], CreateBookingDto.prototype, "driverViaPrice", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsNumberString)(),
     __metadata("design:type", String)
-], CreateBookingDto.prototype, "driverTelCharge", void 0);
+], CreateBookingDto.prototype, "driverGratuity", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsNumberString)(),

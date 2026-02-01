@@ -4,6 +4,8 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
+  BeforeInsert,
+  BeforeUpdate,
 } from "typeorm";
 
 @Entity("bookings")
@@ -129,9 +131,18 @@ export class Booking {
   clientWaitingTimePrice!: string;
   @Column({ type: "numeric", precision: 12, scale: 2, default: 0 })
   clientLhrGtwCharge!: string;
-  @Column({ type: "integer", default: 0 }) clientTelUsedMins!: number;
+
+  // Replaced clientTelUsedMins/clientTelCharge with Gratuity and Via logic
+  // Keeping old columns commented for safety or migration if needed
+  // @Column({ type: "integer", default: 0 }) clientTelUsedMins!: number;
+  // @Column({ type: "numeric", precision: 12, scale: 2, default: 0 }) clientTelCharge!: string;
+  
   @Column({ type: "numeric", precision: 12, scale: 2, default: 0 })
-  clientTelCharge!: string;
+  clientViaPrice!: string; // [NEW]
+
+  @Column({ type: "numeric", precision: 12, scale: 2, default: 0 })
+  clientGratuity!: string; // [NEW]
+
   @Column({ type: "numeric", precision: 12, scale: 2, default: 0 })
   clientCarPark!: string;
   @Column({ type: "numeric", precision: 12, scale: 2, default: 0 })
@@ -150,9 +161,17 @@ export class Booking {
   driverWaitingTimePrice!: string;
   @Column({ type: "numeric", precision: 12, scale: 2, default: 0 })
   driverLhrGtwCharge!: string;
-  @Column({ type: "integer", default: 0 }) driverTelUsedMins!: number;
+
+  // Replaced driverTelUsedMins/driverTelCharge with Gratuity and Via logic
+  // @Column({ type: "integer", default: 0 }) driverTelUsedMins!: number;
+  // @Column({ type: "numeric", precision: 12, scale: 2, default: 0 }) driverTelCharge!: string;
+
   @Column({ type: "numeric", precision: 12, scale: 2, default: 0 })
-  driverTelCharge!: string;
+  driverViaPrice!: string; // [NEW]
+
+  @Column({ type: "numeric", precision: 12, scale: 2, default: 0 })
+  driverGratuity!: string; // [NEW]
+
   @Column({ type: "numeric", precision: 12, scale: 2, default: 0 })
   driverCarPark!: string;
   @Column({ type: "numeric", precision: 12, scale: 2, default: 0 })
@@ -160,4 +179,41 @@ export class Booking {
 
   @CreateDateColumn() createdAt!: Date;
   @UpdateDateColumn() updatedAt!: Date;
+
+  @BeforeInsert()
+  @BeforeUpdate()
+  calculateTotals() {
+    // Helper to parse string to float, default to 0
+    const parse = (val: string | number | null | undefined) => {
+      if (!val) return 0;
+      const num = parseFloat(val.toString());
+      return isNaN(num) ? 0 : num;
+    };
+
+    // Client Total
+    const cTotal =
+      parse(this.clientScheduledFare) +
+      parse(this.clientCharge) +
+      parse(this.clientMeetGreet) +
+      parse(this.clientWaitingTimePrice) + // Waiting time price, not mins
+      parse(this.clientLhrGtwCharge) +
+      parse(this.clientViaPrice) +
+      parse(this.clientGratuity) +
+      parse(this.clientCarPark);
+    
+    this.totalClient = cTotal.toFixed(2);
+
+    // Driver Total
+    const dTotal =
+      parse(this.driverScheduledFare) +
+      parse(this.driverCharge) +
+      parse(this.driverMeetGreet) +
+      parse(this.driverWaitingTimePrice) +
+      parse(this.driverLhrGtwCharge) +
+      parse(this.driverViaPrice) +
+      parse(this.driverGratuity) +
+      parse(this.driverCarPark);
+      
+    this.totalDriver = dTotal.toFixed(2);
+  }
 }
