@@ -14,7 +14,8 @@ pids/
 *.seed
 *.pid.lock
 
-# Directory for build output
+# Directory for build output (Commit build for deployment)
+!dist/
 
 
 # TypeScript cache

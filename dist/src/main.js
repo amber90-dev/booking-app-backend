@@ -9,13 +9,21 @@ const app_module_1 = require("./app.module");
 const cookie_parser_1 = __importDefault(require("cookie-parser")); // <-- change this
 async function bootstrap() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule);
+    // Trust proxy is required for secure cookies behind Nginx/Load Balancer
+    app.set('trust proxy', 1);
     app.enableCors({
-        origin: ["http://localhost:5173"],
+        origin: (origin, callback) => {
+            // Allow requests with no origin (like mobile apps or curl requests)
+            if (!origin)
+                return callback(null, true);
+            // trusting all origins for now to fix deployment issues, or restrict to domain
+            callback(null, true);
+        },
         credentials: true,
     });
     app.use((0, cookie_parser_1.default)());
-    await app.listen(3000);
-    console.log("API on http://localhost:3000");
+    await app.listen(process.env.PORT || 3000);
+    console.log(`API running on port ${process.env.PORT || 3000}`);
 }
 bootstrap();
 //# sourceMappingURL=main.js.map

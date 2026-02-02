@@ -37,7 +37,18 @@ export class AuthService {
     const user = await this.validateUser(username, password);
     const [access, refresh] = await Promise.all([ this.signAccess(user.id, user.username), this.signRefresh(user.id, user.username) ]);
     await this.users.setRefreshTokenHash(user.id, await bcrypt.hash(refresh, 12));
-    res.cookie(RT_COOKIE, refresh, { httpOnly: true, sameSite: 'lax', secure: false, maxAge: 7*24*60*60*1000, path: '/auth' });
+    
+    // Cookie Options
+    const isProd = process.env.NODE_ENV === 'production';
+    const cookieOpts: any = {
+      httpOnly: true,
+      sameSite: isProd ? 'none' : 'lax',
+      secure: isProd, // Required for SameSite=None
+      maxAge: 7*24*60*60*1000,
+      path: '/auth'
+    };
+
+    res.cookie(RT_COOKIE, refresh, cookieOpts);
     return { accessToken: access, user: { id: user.id, username: user.username } };
   }
 
@@ -55,7 +66,17 @@ export class AuthService {
     const access = await this.signAccess(userId, username);
     const newRefresh = await this.signRefresh(userId, username);
     await this.users.setRefreshTokenHash(userId, await bcrypt.hash(newRefresh, 12));
-    res.cookie(RT_COOKIE, newRefresh, { httpOnly: true, sameSite: 'lax', secure: false, maxAge: 7*24*60*60*1000, path: '/auth' });
+    
+    const isProd = process.env.NODE_ENV === 'production';
+    const cookieOpts: any = {
+      httpOnly: true,
+      sameSite: isProd ? 'none' : 'lax',
+      secure: isProd, 
+      maxAge: 7*24*60*60*1000,
+      path: '/auth'
+    };
+
+    res.cookie(RT_COOKIE, newRefresh, cookieOpts);
     return { accessToken: access, user: { id: userId, username } };
   }
 }
