@@ -45,7 +45,7 @@ export class AuthService {
       sameSite: isProd ? 'none' : 'lax',
       secure: isProd, // Required for SameSite=None
       maxAge: 7*24*60*60*1000,
-      path: '/auth'
+      path: '/'
     };
 
     res.cookie(RT_COOKIE, refresh, cookieOpts);
@@ -54,7 +54,7 @@ export class AuthService {
 
   async logout(res: any, userId: string) {
     await this.users.setRefreshTokenHash(userId, null);
-    res.clearCookie(RT_COOKIE, { path: '/auth' });
+    res.clearCookie(RT_COOKIE, { path: '/' });
     return { success: true };
   }
 
@@ -73,7 +73,7 @@ export class AuthService {
       sameSite: isProd ? 'none' : 'lax',
       secure: isProd, 
       maxAge: 7*24*60*60*1000,
-      path: '/auth'
+      path: '/'
     };
 
     res.cookie(RT_COOKIE, newRefresh, cookieOpts);

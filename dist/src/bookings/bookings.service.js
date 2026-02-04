@@ -25,26 +25,55 @@ let BookingsService = class BookingsService {
         return this.repo.save(this.repo.create(dto));
     }
     async findAll(page = 1, limit = 20, q, cancelled) {
-        const whereParts = [];
+        const query = this.repo.createQueryBuilder("b")
+            .leftJoin("companies", "c", "CAST(c.id AS TEXT) = b.accountNo")
+            .leftJoin("drivers", "d", "CAST(d.id AS TEXT) = b.driverNo")
+            .select("b.*")
+            .addSelect("c.accountNo", "company_accountNo")
+            .addSelect("d.driverNo", "driver_driverNo");
         if (q) {
-            whereParts.push({ bookingRef: (0, typeorm_2.ILike)(`%${q}%`) }, { clientId: (0, typeorm_2.ILike)(`%${q}%`) }, { pickUpAddress: (0, typeorm_2.ILike)(`%${q}%`) }, { dropOffAddress: (0, typeorm_2.ILike)(`%${q}%`) });
+            query.andWhere("(b.bookingRef ILIKE :q OR b.clientId ILIKE :q OR b.pickUpAddress ILIKE :q OR b.dropOffAddress ILIKE :q)", { q: `%${q}%` });
         }
-        const where = whereParts.length ? whereParts : {};
-        const finalWhere = whereParts.length
-            ? whereParts.map((w) => ({
-                ...w,
-                ...(cancelled !== undefined ? { cancelled } : {}),
-            }))
-            : cancelled !== undefined
-                ? { cancelled }
-                : {};
-        const [items, total] = await this.repo.findAndCount({
-            where: finalWhere,
-            order: { date: "DESC", time: "DESC" },
-            take: limit,
-            skip: (page - 1) * limit,
+        if (cancelled !== undefined) {
+            query.andWhere("b.cancelled = :cancelled", { cancelled });
+        }
+        query.orderBy("b.date", "DESC").addOrderBy("b.time", "DESC");
+        // Pagination
+        query.skip((page - 1) * limit).take(limit);
+        const count = await query.getCount();
+        const raw = await query.getRawMany();
+        // Map raw results back to Booking-like objects
+        const items = raw.map(row => {
+            // Manual mapping since getRawMany flattens everything
+            // Depending on driver, field names might be b_id or id. 
+            // Usually TypeORM with prefix 'b' outputs 'b_field'.
+            // Let's check keys dynamically or assume standard behavior.
+            const booking = {};
+            // Standardize fields from "b_" prefix
+            Object.keys(row).forEach(k => {
+                if (k.startsWith("b_")) {
+                    booking[k.substring(2)] = row[k];
+                }
+                else if (k === "company_accountNo" || k === "driver_driverNo") {
+                    // ignore here, handle below
+                }
+                else {
+                    // fallback for unprefixed columns if any
+                    // booking[k] = row[k]; 
+                }
+            });
+            // Fallback if empty (some drivers don't prefix strictly?) 
+            // Actually simply:
+            if (!booking.id && row.id)
+                Object.assign(booking, row);
+            // Now override AccountNo / DriverNo
+            if (row.company_accountNo)
+                booking.accountNo = row.company_accountNo;
+            if (row.driver_driverNo)
+                booking.driverNo = row.driver_driverNo;
+            return booking;
         });
-        return { items, total, page, limit };
+        return { items, total: count, page, limit };
     }
     findOne(id) {
         return this.repo.findOne({ where: { id } });

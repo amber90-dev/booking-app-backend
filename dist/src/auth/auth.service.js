@@ -87,14 +87,14 @@ let AuthService = class AuthService {
             sameSite: isProd ? 'none' : 'lax',
             secure: isProd, // Required for SameSite=None
             maxAge: 7 * 24 * 60 * 60 * 1000,
-            path: '/auth'
+            path: '/'
         };
         res.cookie(RT_COOKIE, refresh, cookieOpts);
         return { accessToken: access, user: { id: user.id, username: user.username } };
     }
     async logout(res, userId) {
         await this.users.setRefreshTokenHash(userId, null);
-        res.clearCookie(RT_COOKIE, { path: '/auth' });
+        res.clearCookie(RT_COOKIE, { path: '/' });
         return { success: true };
     }
     async refresh(res, userId, username, refreshToken) {
@@ -113,7 +113,7 @@ let AuthService = class AuthService {
             sameSite: isProd ? 'none' : 'lax',
             secure: isProd,
             maxAge: 7 * 24 * 60 * 60 * 1000,
-            path: '/auth'
+            path: '/'
         };
         res.cookie(RT_COOKIE, newRefresh, cookieOpts);
         return { accessToken: access, user: { id: userId, username } };
