@@ -10,8 +10,25 @@ import { UpdateBookingDto } from './dto/update-booking.dto';
 export class BookingsService {
   constructor(@InjectRepository(Booking) private repo: Repository<Booking>) {}
 
+  private cleanNumericFields(booking: any) {
+    const numericFields = [
+      'clientScheduledFare', 'clientCharge', 'clientMeetGreet', 'clientWaitingTime', 
+      'clientWaitingTimePrice', 'clientLhrGtwCharge', 'clientViaPrice', 'clientGratuity', 'clientCarPark', 'totalClient',
+      'driverScheduledFare', 'driverCharge', 'driverMeetGreet', 'driverWaitingTime', 
+      'driverWaitingTimePrice', 'driverLhrGtwCharge', 'driverViaPrice', 'driverGratuity', 'driverCarPark', 'totalDriver'
+    ] as const;
+    
+    for (const f of numericFields) {
+      if (booking[f] === '') {
+        booking[f] = "0";
+      }
+    }
+    return booking;
+  }
+
   async create(dto: CreateBookingDto) {
-    return this.repo.save(this.repo.create(dto));
+    const entity = this.repo.create(dto);
+    return this.repo.save(this.cleanNumericFields(entity));
   }
 
   async findAll(page = 1, limit = 20, q?: string, cancelled?: boolean) {
@@ -79,8 +96,12 @@ export class BookingsService {
   }
 
   async update(id: string, dto: UpdateBookingDto) {
-    await this.repo.update(id, dto);
-    return this.findOne(id);
+    const existing = await this.findOne(id);
+    if (!existing) return null;
+    
+    const updated = Object.assign(existing, dto);
+    
+    return this.repo.save(this.cleanNumericFields(updated));
   }
 
   async remove(id: string) {
