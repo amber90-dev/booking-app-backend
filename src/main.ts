@@ -3,10 +3,16 @@ import { NestFactory } from "@nestjs/core";
 import { NestExpressApplication } from "@nestjs/platform-express";
 import { AppModule } from "./app.module";
 import cookieParser from "cookie-parser"; // <-- change this
+import { join } from "path";
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   
+  // Serve static assets from uploads folder
+  app.useStaticAssets(join(process.cwd(), 'uploads'), {
+    prefix: '/uploads',
+  });
+
   // Trust proxy is required for secure cookies behind Nginx/Load Balancer
   app.set('trust proxy', 1);
 

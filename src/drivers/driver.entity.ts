@@ -53,8 +53,7 @@ export class Driver {
   @Column({ type: "date", nullable: true }) startDate!: string | null;
   @Column({ type: "date", nullable: true }) finishDate!: string | null;
 
-  // Optional photo URL if you need that big box from the legacy UI
-  @Column({ type: "varchar", length: 512, nullable: true }) photoUrl!:
+  @Column({ type: "text", nullable: true }) photoUrl!:
     | string
     | null;
 

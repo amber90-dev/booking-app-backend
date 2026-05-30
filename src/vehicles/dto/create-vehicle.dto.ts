@@ -19,4 +19,6 @@ export class CreateVehicleDto {
   @IsOptional() @IsDateString() carCeasedToBeAvailable?: string;
   @IsOptional() @IsDateString() pcoDriverExpiry?: string;
   @IsOptional() @IsDateString() pcoVehicleExpiry?: string;
+
+  @IsOptional() @IsString() photoUrl?: string;
 }

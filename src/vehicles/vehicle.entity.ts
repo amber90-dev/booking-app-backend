@@ -50,6 +50,10 @@ export class Vehicle {
   @Column({ type: "date", nullable: true }) pcoDriverExpiry!: string | null;
   @Column({ type: "date", nullable: true }) pcoVehicleExpiry!: string | null;
 
+  @Column({ type: "text", nullable: true }) photoUrl!:
+    | string
+    | null;
+
   @CreateDateColumn() createdAt!: Date;
   @UpdateDateColumn() updatedAt!: Date;
 }
