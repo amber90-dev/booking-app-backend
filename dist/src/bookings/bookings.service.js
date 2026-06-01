@@ -21,8 +21,23 @@ let BookingsService = class BookingsService {
     constructor(repo) {
         this.repo = repo;
     }
+    cleanNumericFields(booking) {
+        const numericFields = [
+            'clientScheduledFare', 'clientCharge', 'clientMeetGreet', 'clientWaitingTime',
+            'clientWaitingTimePrice', 'clientLhrGtwCharge', 'clientViaPrice', 'clientGratuity', 'clientCarPark', 'totalClient',
+            'driverScheduledFare', 'driverCharge', 'driverMeetGreet', 'driverWaitingTime',
+            'driverWaitingTimePrice', 'driverLhrGtwCharge', 'driverViaPrice', 'driverGratuity', 'driverCarPark', 'totalDriver'
+        ];
+        for (const f of numericFields) {
+            if (booking[f] === '') {
+                booking[f] = "0";
+            }
+        }
+        return booking;
+    }
     async create(dto) {
-        return this.repo.save(this.repo.create(dto));
+        const entity = this.repo.create(dto);
+        return this.repo.save(this.cleanNumericFields(entity));
     }
     async findAll(page = 1, limit = 20, q, cancelled) {
         const query = this.repo.createQueryBuilder("b")
@@ -79,8 +94,11 @@ let BookingsService = class BookingsService {
         return this.repo.findOne({ where: { id } });
     }
     async update(id, dto) {
-        await this.repo.update(id, dto);
-        return this.findOne(id);
+        const existing = await this.findOne(id);
+        if (!existing)
+            return null;
+        const updated = Object.assign(existing, dto);
+        return this.repo.save(this.cleanNumericFields(updated));
     }
     async remove(id) {
         await this.repo.delete(id);

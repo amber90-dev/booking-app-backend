@@ -20,6 +20,7 @@ const vehicles_module_1 = require("./vehicles/vehicles.module");
 const drivers_module_1 = require("./drivers/drivers.module");
 const contacts_module_1 = require("./contacts/contacts.module");
 const staff_module_1 = require("./staff/staff.module");
+const uploads_module_1 = require("./uploads/uploads.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -43,6 +44,7 @@ exports.AppModule = AppModule = __decorate([
             drivers_module_1.DriversModule,
             contacts_module_1.ContactsModule,
             staff_module_1.StaffModule,
+            uploads_module_1.UploadsModule,
         ],
     })
 ], AppModule);

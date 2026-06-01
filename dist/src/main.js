@@ -7,8 +7,13 @@ require("reflect-metadata");
 const core_1 = require("@nestjs/core");
 const app_module_1 = require("./app.module");
 const cookie_parser_1 = __importDefault(require("cookie-parser")); // <-- change this
+const path_1 = require("path");
 async function bootstrap() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule);
+    // Serve static assets from uploads folder
+    app.useStaticAssets((0, path_1.join)(process.cwd(), 'uploads'), {
+        prefix: '/uploads',
+    });
     // Trust proxy is required for secure cookies behind Nginx/Load Balancer
     app.set('trust proxy', 1);
     app.enableCors({

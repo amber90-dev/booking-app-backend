@@ -76,7 +76,7 @@ __decorate([
     __metadata("design:type", Object)
 ], Driver.prototype, "finishDate", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: "varchar", length: 512, nullable: true }),
+    (0, typeorm_1.Column)({ type: "text", nullable: true }),
     __metadata("design:type", Object)
 ], Driver.prototype, "photoUrl", void 0);
 __decorate([

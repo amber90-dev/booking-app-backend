@@ -80,6 +80,10 @@ __decorate([
     __metadata("design:type", Object)
 ], Vehicle.prototype, "pcoVehicleExpiry", void 0);
 __decorate([
+    (0, typeorm_1.Column)({ type: "text", nullable: true }),
+    __metadata("design:type", Object)
+], Vehicle.prototype, "photoUrl", void 0);
+__decorate([
     (0, typeorm_1.CreateDateColumn)(),
     __metadata("design:type", Date)
 ], Vehicle.prototype, "createdAt", void 0);
