@@ -4,9 +4,38 @@ import { NestExpressApplication } from "@nestjs/platform-express";
 import { AppModule } from "./app.module";
 import cookieParser from "cookie-parser"; // <-- change this
 import { join } from "path";
+import { ExceptionFilter, Catch, ArgumentsHost } from "@nestjs/common";
+
+@Catch()
+class SafeExceptionsFilter implements ExceptionFilter {
+  catch(exception: any, host: ArgumentsHost) {
+    const ctx = host.switchToHttp();
+    const response = ctx.getResponse();
+    
+    console.error("CRITICAL EXCEPTION CAUGHT:", exception);
+
+    let status = 500;
+    let message = "Internal server error";
+
+    if (exception && typeof exception.getStatus === "function") {
+      status = exception.getStatus();
+    }
+    if (exception && exception.message) {
+      message = exception.message;
+    }
+
+    response.status(status).json({
+      statusCode: status,
+      message: message,
+      error: exception && exception.name ? exception.name : "Error",
+    });
+  }
+}
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  
+  app.useGlobalFilters(new SafeExceptionsFilter());
   
   // Serve static assets from uploads folder
   app.useStaticAssets(join(process.cwd(), 'uploads'), {
