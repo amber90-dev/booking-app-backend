@@ -7,7 +7,7 @@ import {
 } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { diskStorage } from "multer";
-import { extname } from "path";
+import { extname, join } from "path";
 import { existsSync, mkdirSync } from "fs";
 
 @Controller("upload")
@@ -17,7 +17,7 @@ export class UploadsController {
     FileInterceptor("file", {
       storage: diskStorage({
         destination: (req: any, file: any, cb: any) => {
-          const uploadPath = "./uploads";
+          const uploadPath = join(process.cwd(), "uploads");
           if (!existsSync(uploadPath)) {
             mkdirSync(uploadPath, { recursive: true });
           }

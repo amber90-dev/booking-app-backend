@@ -35,7 +35,7 @@ __decorate([
     (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)("file", {
         storage: (0, multer_1.diskStorage)({
             destination: (req, file, cb) => {
-                const uploadPath = "./uploads";
+                const uploadPath = (0, path_1.join)(process.cwd(), "uploads");
                 if (!(0, fs_1.existsSync)(uploadPath)) {
                     (0, fs_1.mkdirSync)(uploadPath, { recursive: true });
                 }
