@@ -41,7 +41,7 @@ export class BookingsService {
 
     if (q) {
       query.andWhere(
-        "(b.bookingRef ILIKE :q OR b.clientId ILIKE :q OR b.pickUpAddress ILIKE :q OR b.dropOffAddress ILIKE :q)", 
+        "(b.bookingRef ILIKE :q OR b.clientId ILIKE :q OR b.clientForename ILIKE :q OR b.clientSurname ILIKE :q OR CONCAT(b.clientForename, ' ', b.clientSurname) ILIKE :q OR b.pickUpAddress ILIKE :q OR b.dropOffAddress ILIKE :q OR b.vehicle ILIKE :q OR b.companyName ILIKE :q OR b.driverForename ILIKE :q OR b.driverSurname ILIKE :q OR CONCAT(b.driverForename, ' ', b.driverSurname) ILIKE :q)", 
         { q: `%${q}%` }
       );
     }

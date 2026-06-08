@@ -47,7 +47,7 @@ let BookingsService = class BookingsService {
             .addSelect("c.accountNo", "company_accountNo")
             .addSelect("d.driverNo", "driver_driverNo");
         if (q) {
-            query.andWhere("(b.bookingRef ILIKE :q OR b.clientId ILIKE :q OR b.pickUpAddress ILIKE :q OR b.dropOffAddress ILIKE :q)", { q: `%${q}%` });
+            query.andWhere("(b.bookingRef ILIKE :q OR b.clientId ILIKE :q OR b.clientForename ILIKE :q OR b.clientSurname ILIKE :q OR CONCAT(b.clientForename, ' ', b.clientSurname) ILIKE :q OR b.pickUpAddress ILIKE :q OR b.dropOffAddress ILIKE :q OR b.vehicle ILIKE :q OR b.companyName ILIKE :q OR b.driverForename ILIKE :q OR b.driverSurname ILIKE :q OR CONCAT(b.driverForename, ' ', b.driverSurname) ILIKE :q)", { q: `%${q}%` });
         }
         if (cancelled !== undefined) {
             query.andWhere("b.cancelled = :cancelled", { cancelled });
